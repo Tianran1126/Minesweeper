@@ -78,6 +78,7 @@ public class GameBoard extends JFrame
                             s.leftClicked();
                         else
                             s.rightClicked();
+
                     }
                 });
                     
