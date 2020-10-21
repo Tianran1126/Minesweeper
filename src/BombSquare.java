@@ -20,9 +20,11 @@ public class BombSquare extends GameSquare {
     public void leftClicked() {
         if (hasBomb)
             setImage("images/bomb.png");
-        else {
-           // display(GetBombs());
+        else if(this.GetBombs()==0)  {
             Fill(this);
+        }
+        else{
+            display(GetBombs(),this);
         }
         reveal=true;
     }
@@ -72,12 +74,12 @@ public class BombSquare extends GameSquare {
 
     private void Fill(BombSquare square){
         if(square==null) return;
-      else if(square.isHasBomb()==false&&square.show==false) {
+       if(square.GetBombs()==0&&square.show==false) {
            display(square.GetBombs(), square);
-           Fill((BombSquare) board.getSquareAt(square.getXLocation() - 1, square.getYLocation()));
            Fill((BombSquare) board.getSquareAt(square.getXLocation() + 1, square.getYLocation()));
-            Fill((BombSquare) board.getSquareAt(square.getXLocation() , square.getYLocation()-1));
-            Fill((BombSquare) board.getSquareAt(square.getXLocation() , square.getYLocation()+1));
+           Fill((BombSquare) board.getSquareAt(square.getXLocation() - 1, square.getYLocation()));
+           Fill((BombSquare) board.getSquareAt(square.getXLocation() , square.getYLocation()-1));
+           Fill((BombSquare) board.getSquareAt(square.getXLocation() , square.getYLocation()+1));
        }
        else{
            return;
