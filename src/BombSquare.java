@@ -7,13 +7,12 @@ public class BombSquare extends GameSquare {
     private boolean reveal = false;//make sure user can't change the ImageIcon of the square
     private boolean show = false;// return true if square is clicked
     private boolean flag = false;// monitor whether user can remove a flag from the square  .
-
     public static final int MINE_PROBABILITY = 10;
 
     public BombSquare(int x, int y, GameBoard board) {
         super(x, y, "images/blank.png");
         this.board = board;
-        this.hasBomb = ( (int)(Math.random() * MINE_PROBABILITY)) ==1;
+        this.hasBomb = ( (int)(Math.random() * MINE_PROBABILITY))==1;
     }
 
     /**
@@ -21,8 +20,9 @@ public class BombSquare extends GameSquare {
      */
     @Override
     public void leftClicked() {
-        if (hasBomb)
+        if (hasBomb) {
             setImage("images/bomb.png");
+        }
         else {
             Fill(this);
         }
@@ -55,7 +55,7 @@ public class BombSquare extends GameSquare {
      * Display square according to the count
      * @param count number on the square
      */
-    private void display(int count, BombSquare square) {
+    private void display(int count,BombSquare square) {
         String Count = String.valueOf(count);
         Count = "images/" + Count + ".png";
         square.setImage(Count);
@@ -91,19 +91,17 @@ public class BombSquare extends GameSquare {
     private void Fill(BombSquare square) {
         if (square == null||square.isHasBomb()||square.show) return;
         else if (square.GetBombs() > 0) {
-            display(square.GetBombs(), square);
+           display(square.GetBombs(), square);
         }
-        else if (square.GetBombs() == 0) {
+        else {
             display(square.GetBombs(), square);
             Fill((BombSquare) board.getSquareAt(square.getXLocation() + 1, square.getYLocation()));
             Fill((BombSquare) board.getSquareAt(square.getXLocation() - 1, square.getYLocation()));
             Fill((BombSquare) board.getSquareAt(square.getXLocation(), square.getYLocation() - 1));
             Fill((BombSquare) board.getSquareAt(square.getXLocation(), square.getYLocation() + 1));
         }
-        else {
-            return;
-        }
     }
+
 
 }
 
