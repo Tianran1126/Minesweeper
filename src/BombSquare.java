@@ -8,11 +8,12 @@ public class BombSquare extends GameSquare {
     private boolean show = false;// return true if square is clicked
     private boolean flag = false;// monitor whether user can remove a flag from the square  .
     public static final int MINE_PROBABILITY = 10;
+    private boolean traverseB = false;//used to display all bombs
 
     public BombSquare(int x, int y, GameBoard board) {
         super(x, y, "images/blank.png");
         this.board = board;
-        this.hasBomb = ( (int)(Math.random() * MINE_PROBABILITY))==1;
+        this.hasBomb = ((int) (Math.random() * MINE_PROBABILITY)) == 1;
     }
 
     /**
@@ -21,12 +22,10 @@ public class BombSquare extends GameSquare {
     @Override
     public void leftClicked() {
         if (hasBomb) {
-            setImage("images/bomb.png");
-        }
-        else {
+            FillB(this);
+        } else {
             Fill(this);
         }
-        reveal = true;
     }
 
     /**
@@ -45,21 +44,16 @@ public class BombSquare extends GameSquare {
     }
 
     /**
-     *return true if square is a bomb
-     */
-    public boolean isHasBomb() {
-        return hasBomb;
-    }
-
-    /**
      * Display square according to the count
+     *
      * @param count number on the square
      */
-    private void display(int count,BombSquare square) {
+    private void display(int count, BombSquare square) {
         String Count = String.valueOf(count);
         Count = "images/" + Count + ".png";
         square.setImage(Count);
         square.show = true;
+        square.reveal = true;
     }
 
     /**
@@ -75,11 +69,38 @@ public class BombSquare extends GameSquare {
                     System.out.println("Ignore");
                 } else {
                     BombSquare square = (BombSquare) board.getSquareAt(a, b);
-                    if (square.isHasBomb()) count++;
+                    if (square.hasBomb) count++;
                 }
             }
         }
         return count;
+    }
+
+    /**
+     * To display all bombs if a bomb is clicked
+     */
+    private void FillB(BombSquare square) {
+        if (square == null || square.traverseB) return;
+
+        else {
+            if (square.hasBomb)
+                displayBomb("images/bomb.png", square);
+            square.traverseB = true;
+            FillB((BombSquare) board.getSquareAt(square.getXLocation() + 1, square.getYLocation()));
+            FillB((BombSquare) board.getSquareAt(square.getXLocation() - 1, square.getYLocation()));
+            FillB((BombSquare) board.getSquareAt(square.getXLocation(), square.getYLocation() - 1));
+            FillB((BombSquare) board.getSquareAt(square.getXLocation(), square.getYLocation() + 1));
+        }
+    }
+
+    /**
+     * To display bomb
+     *
+     * @param bomb location of the image
+     */
+    private void displayBomb(String bomb, BombSquare square) {
+        square.setImage(bomb);
+        square.reveal = true;
     }
 
     /**
@@ -89,11 +110,11 @@ public class BombSquare extends GameSquare {
      * surrounding bombs, it should display all of its adjacent squares.
      */
     private void Fill(BombSquare square) {
-        if (square == null||square.isHasBomb()||square.show) return;
+        if (square == null || square.hasBomb || square.show) return;
+
         else if (square.GetBombs() > 0) {
-           display(square.GetBombs(), square);
-        }
-        else {
+            display(square.GetBombs(), square);
+        } else {
             display(square.GetBombs(), square);
             Fill((BombSquare) board.getSquareAt(square.getXLocation() + 1, square.getYLocation()));
             Fill((BombSquare) board.getSquareAt(square.getXLocation() - 1, square.getYLocation()));
@@ -101,8 +122,6 @@ public class BombSquare extends GameSquare {
             Fill((BombSquare) board.getSquareAt(square.getXLocation(), square.getYLocation() + 1));
         }
     }
-
-
 }
 
 
